@@ -1,0 +1,5 @@
+# WP Migration export (large file)
+*.wpress
+
+# Extracted WP data (large directory)
+_wp_extracted/
