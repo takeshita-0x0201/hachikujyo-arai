@@ -43,7 +43,11 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 p + p { margin-top: 0.5em; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 body {
   font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
@@ -777,8 +781,9 @@ section h3 {
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 10px 12px;
-  font-size: 15px;
+  padding: 12px 14px;
+  font-size: 16px;
+  min-height: 44px;
   font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
   border: 1px solid var(--color-border);
   background: var(--color-bg);
@@ -952,7 +957,7 @@ summary:focus-visible,
   .page-cta .btn-tel,
   .page-cta .btn-contact { width: 100%; margin-left: 0; }
   .badges { gap: 8px; }
-  .badge { font-size: 12px; padding: 6px 10px; }
+  .badge { font-size: 13px; padding: 6px 10px; }
 
   /* Reason */
   .reason-list { flex-direction: column; }
@@ -1008,11 +1013,18 @@ summary:focus-visible,
     font-weight: 700;
     font-size: 14px;
     color: #fff;
-    white-space: nowrap;
+    white-space: normal;
   }
   .sp-fixed-cta a svg {
     flex-shrink: 0;
   }
   .sp-fixed-cta .sp-btn-tel { background: var(--color-accent); color: var(--color-text); border-right: 1px solid rgba(0,0,0,.1); }
   .sp-fixed-cta .sp-btn-contact { background: var(--color-bg); color: var(--color-text); border-top: 1px solid var(--color-accent); }
+
+  /* モバイルでnowrap解除 */
+  .btn-tel { white-space: normal; }
+  .btn-contact { white-space: normal; }
+  .header-nav a { white-space: normal; }
+  .header-logo small { font-size: 12px; }
+  .header-tel small { font-size: 12px; }
 }
