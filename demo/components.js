@@ -102,7 +102,7 @@ function renderFooter() {
         <div class="footer-info">
           <h4>${SITE.name}</h4>
           <p>${SITE.address}</p>
-          <p>TEL: <a href="tel:${SITE.telRaw}" style="color:#333;">${SITE.tel}</a></p>
+          <p>TEL: <a href="tel:${SITE.telRaw}" style="color:#333;padding:8px 0;display:inline-block;">${SITE.tel}</a></p>
           <p>営業時間: 24時間 / 年中無休</p>
         </div>
         <nav class="footer-nav" aria-label="フッターナビ">

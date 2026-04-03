@@ -1021,6 +1021,20 @@ summary:focus-visible,
   .sp-fixed-cta .sp-btn-tel { background: var(--color-accent); color: var(--color-text); border-right: 1px solid rgba(0,0,0,.1); }
   .sp-fixed-cta .sp-btn-contact { background: var(--color-bg); color: var(--color-text); border-top: 1px solid var(--color-accent); }
 
+  /* テキストリンクのタップ領域拡大 */
+  .breadcrumb a { padding: 8px 4px; display: inline-block; }
+  .area-towns-list li a,
+  .area-link-list a,
+  .area-list a { padding: 6px 2px; display: inline-block; min-height: 36px; line-height: 24px; }
+  .bee-info-block a { padding: 6px 0; display: inline-block; }
+  .footer-nav a { padding: 8px 4px; display: inline-block; }
+  /* 本文内テキストリンク・CTA周辺リンク */
+  section p a { padding: 6px 0; display: inline-block; }
+  .sec-contact .contact-sub a { padding: 10px 0; display: inline-block; }
+  .header-tel a { padding: 8px 0; display: inline-block; }
+  /* FAQ内リンク */
+  .faq-answer a { padding: 6px 0; display: inline-block; }
+
   /* モバイルでnowrap解除 */
   .btn-tel { white-space: normal; }
   .btn-contact { white-space: normal; }
