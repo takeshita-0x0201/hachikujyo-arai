@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>事例#15：スズメバチ駆除（屋根裏・撤去後）｜蜂駆除あらい</title>
+  <meta name="description" content="9月に対応したスズメバチ駆除の施工事例。屋根裏の蜂の巣を駆除しました。料金44,000円（税込）。福岡県・佐賀県・熊本県対応。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="canonical" href="case-15.html">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "トップ", "item": "index.html"},
+    {"@type": "ListItem", "position": 2, "name": "施工事例", "item": "case.html"},
+    {"@type": "ListItem", "position": 3, "name": "事例#15", "item": "case-15.html"}
+  ]
+}
+  </script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="component-header"></div>
+  <div id="component-mobile-menu"></div>
+
+  <main>
+
+    <nav class="breadcrumb">
+      <div class="container">
+        <a href="index.html">トップ</a> &gt; <a href="case.html">施工事例</a> &gt; 事例#15
+      </div>
+    </nav>
+
+    <section class="page-hero">
+      <div class="container">
+        <h1>事例#15：スズメバチ駆除（屋根裏・撤去後）</h1>
+        <p>9月に対応したスズメバチの駆除事例です。屋根裏に巣ができたケースです。スズメバチの被害でお困りの方の参考にご覧ください。</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>施工写真</h2>
+        <div class="case-detail-photos count-1">
+          <img src="images/case_n28.jpg" alt="施工事例#15 スズメバチ駆除（屋根裏・撤去後） (1/1)">
+        </div>
+
+        <h2 style="margin-top:32px;">事例詳細</h2>
+        <div class="table-scroll">
+        <table class="price-table">
+          <tbody>
+            <tr><td>蜂の種類</td><td>スズメバチ</td></tr>
+            <tr><td>時期</td><td>9月</td></tr>
+            <tr><td>場所</td><td>屋根裏</td></tr>
+            <tr><td>状況</td><td>高所作業</td></tr>
+            <tr><td>料金</td><td>44,000円（税込）</td></tr>
+          </tbody>
+        </table>
+        </div>
+
+        <h2 style="margin-top:32px;">スズメバチについて</h2>
+        <p>スズメバチは攻撃性が高く、巣に近づくだけで集団で襲ってくることがあります。早期の駆除が安全のために重要です。</p>
+
+        <p class="price-note" style="margin-top:24px;">※ 料金は当時の価格です。最新の料金は<a href="bee.html">蜂駆除の料金表</a>をご確認ください。</p>
+
+        <p style="margin-top:32px;"><a href="case.html">&larr; 施工事例一覧に戻る</a></p>
+      </div>
+    </section>
+
+    <div id="component-contact-cta"></div>
+
+  </main>
+
+  <!-- ===== Lightbox ===== -->
+  <div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="画像拡大表示">
+    <button class="lightbox-close" type="button" aria-label="閉じる">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+  </div>
+
+  <div id="component-footer"></div>
+  <div id="component-fixed-cta"></div>
+
+  <script src="components.js"></script>
+  <script>
+    (function() {
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const closeBtn = lightbox.querySelector('.lightbox-close');
+      function openLightbox(src, alt) {
+        lightboxImg.src = src;
+        lightboxImg.alt = alt || '';
+        lightbox.hidden = false;
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLightbox() {
+        lightbox.hidden = true;
+        lightboxImg.src = '';
+        document.body.style.overflow = '';
+      }
+      document.querySelectorAll('.case-detail-photos img').forEach(img => {
+        img.addEventListener('click', () => openLightbox(img.src, img.alt));
+      });
+      lightbox.addEventListener('click', e => {
+        if (e.target === lightbox || e.target === closeBtn) closeLightbox();
+      });
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !lightbox.hidden) closeLightbox();
+      });
+    })();
+  </script>
+
+</body>
+</html>

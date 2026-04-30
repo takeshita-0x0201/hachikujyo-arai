@@ -86,14 +86,16 @@ function renderContactCTA() {
     <div class="container">
       <h2>お問い合わせ</h2>
       <p>蜂の巣の駆除は、${SITE.nameShort}にご相談ください。<br>料金は全て事前にお伝えします。</p>
-      <a href="tel:${SITE.telRaw}" class="btn-tel btn-tel-large">
-        電話する ${SITE.tel}
-        <small>24時間受付・電話見積り無料</small>
-      </a>
-      <a href="${LINE.url}" class="btn-line" style="margin-top:12px;" target="_blank" rel="noopener">
-        ${LINE_ICON}
-        ${LINE.label}
-      </a>
+      <div class="contact-cta-buttons">
+        <a href="tel:${SITE.telRaw}" class="btn-tel btn-tel-large">
+          電話する ${SITE.tel}
+          <small>24時間受付・電話見積り無料</small>
+        </a>
+        <a href="${LINE.url}" class="btn-line btn-line-large" target="_blank" rel="noopener">
+          ${LINE_ICON}
+          <span class="btn-line-text">${LINE.label}<small>友だち追加で写真相談OK</small></span>
+        </a>
+      </div>
       <p class="contact-sub"><a href="contact.html">お問い合わせフォームはこちら</a></p>
       <p class="info-row">
         ${SITE.name} ｜ ${SITE.address} ｜ ${SITE.hours}

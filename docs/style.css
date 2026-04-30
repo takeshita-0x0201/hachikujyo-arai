@@ -536,10 +536,39 @@ section h3 {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  cursor: zoom-in;
-  transition: transform 0.2s ease;
 }
-.case-photos img:hover { transform: scale(1.04); }
+
+/* --- Case Card Link --- */
+a.case-item {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+a.case-item:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* --- Case Detail Photos (large) --- */
+.case-detail-photos {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.case-detail-photos.count-1 { grid-template-columns: 1fr; max-width: 720px; margin-left: auto; margin-right: auto; }
+.case-detail-photos.count-2 { grid-template-columns: 1fr 1fr; }
+.case-detail-photos.count-3 { grid-template-columns: 1fr 1fr 1fr; }
+.case-detail-photos img {
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  cursor: zoom-in;
+}
+@media (max-width: 768px) {
+  .case-detail-photos.count-2,
+  .case-detail-photos.count-3 { grid-template-columns: 1fr; }
+}
 
 /* --- Lightbox --- */
 .lightbox {
@@ -735,6 +764,40 @@ section h3 {
   padding: 16px 40px;
   background: var(--color-accent);
   color: var(--color-text);
+}
+.contact-cta-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.contact-cta-buttons .btn-tel,
+.contact-cta-buttons .btn-line-large {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 28px;
+  font-size: 20px;
+}
+.contact-cta-buttons .btn-line-large {
+  background: #06C755;
+  color: #fff;
+  border-color: #06C755;
+}
+.contact-cta-buttons .btn-line-text {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.3;
+}
+.contact-cta-buttons .btn-line-text small {
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 2px;
 }
 .sec-contact .contact-sub {
   margin-top: 16px;
