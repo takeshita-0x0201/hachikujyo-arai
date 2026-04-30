@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>【内部用】施工事例 マッピング</title>
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+    *,*::before,*::after { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", sans-serif; margin: 0; padding: 0; background: #f6f6f6; color: #222; font-size: 14px; }
+    .topbar { position: sticky; top: 0; z-index: 10; background: #fff; border-bottom: 1px solid #e4e4e4; padding: 12px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+    .topbar h1 { font-size: 15px; margin: 0 12px 0 0; }
+    .topbar .saved { color: #666; font-size: 12px; margin-left: auto; }
+    button { font: inherit; cursor: pointer; padding: 7px 14px; border-radius: 5px; border: 1px solid #d1d1d1; background: #fff; }
+    button.primary { background: #ffc107; border-color: #e0a800; color: #222; font-weight: 700; }
+    button.danger { background: #fff; border-color: #dc3545; color: #dc3545; }
+    button:hover { filter: brightness(.97); }
+    .step-toggle { display: inline-flex; border: 1px solid #d1d1d1; border-radius: 5px; overflow: hidden; }
+    .step-toggle button { border: none; border-radius: 0; padding: 7px 14px; font-weight: 700; }
+    .step-toggle button.active { background: #4338ca; color: #fff; }
+    main { padding: 16px 20px 60px; max-width: 1500px; margin: 0 auto; }
+    .help { background: #fffbe6; border: 1px solid #ffe58f; padding: 10px 14px; border-radius: 6px; font-size: 13px; line-height: 1.65; margin-bottom: 14px; }
+    .help b { color: #b45309; }
+    .help code { background: #fff; padding: 1px 5px; border-radius: 3px; font-size: 12px; border: 1px solid #eee; }
+
+    table.tbl { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border: 1px solid #e4e4e4; border-radius: 8px; overflow: hidden; table-layout: fixed; }
+    table.tbl th, table.tbl td { padding: 8px 10px; border-bottom: 1px solid #eee; text-align: left; vertical-align: middle; font-size: 13px; word-break: break-word; }
+    table.tbl thead th { background: #f3f4f6; font-weight: 700; font-size: 12px; color: #555; }
+    table.tbl tbody tr:hover { background: #fafbff; }
+    table.tbl tbody tr.exclude { opacity: .45; background: #fafafa; }
+
+    .thumb { width: 84px; height: 64px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; cursor: zoom-in; background: #000; }
+    .thumb-list { display: flex; gap: 6px; flex-wrap: wrap; }
+    .thumb-list .item { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+    .thumb-list .item small { font-size: 10px; color: #666; }
+
+    .partner-select { font: inherit; padding: 4px 6px; border: 1px solid #d1d1d1; border-radius: 4px; font-size: 12px; max-width: 100%; background: #fff; }
+    .group-badge { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; margin-top: 4px; background: #e5e7eb; color: #4b5563; }
+    .group-badge.paired { background: #c7d2fe; color: #3730a3; }
+    /* グループ色（caseGroup単位） — JS で行ごとにinline backgroundとして適用 */
+    table.tbl tbody tr.grouped td:first-child,
+    table.tbl tbody tr.grouped td:nth-child(2),
+    table.tbl tbody tr.grouped td:nth-child(3),
+    table.tbl tbody tr.grouped td:nth-child(4) { position: relative; }
+    table.tbl tbody tr.grouped td:first-child::before {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--g-color, transparent);
+    }
+
+    input[type="text"], select, textarea { font: inherit; padding: 5px 7px; border: 1px solid #d1d1d1; border-radius: 4px; font-size: 13px; width: 100%; }
+    textarea { min-height: 36px; resize: vertical; font-size: 12px; }
+
+    .raw-cell { font-size: 11px; color: #666; line-height: 1.4; max-width: 220px; }
+    .raw-cell b { color: #4338ca; font-size: 11px; display: block; margin-bottom: 2px; }
+
+    .visual-cell { font-size: 12px; line-height: 1.5; max-width: 200px; color: #1e1b4b; }
+
+    .stats { display: flex; gap: 16px; font-size: 13px; color: #555; flex-wrap: wrap; padding: 8px 0; }
+    .stats span b { color: #222; }
+
+    #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.85); display: none; align-items: center; justify-content: center; z-index: 100; cursor: zoom-out; }
+    #lightbox.show { display: flex; }
+    #lightbox img { max-width: 92vw; max-height: 92vh; object-fit: contain; }
+
+    #export-area { margin-top: 20px; background: #fff; border: 1px solid #e4e4e4; border-radius: 8px; padding: 14px; }
+    #export-area h2 { font-size: 14px; margin: 0 0 8px; }
+    #export-area textarea { width: 100%; min-height: 220px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; padding: 10px; border: 1px solid #d1d1d1; border-radius: 4px; }
+    .actions-inline { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+    .pill { display: inline-block; padding: 1px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+    .pill.pair { background: #e0e7ff; color: #3730a3; }
+    .pill.solo { background: #fce7f3; color: #9d174d; }
+
+    /* col widths は <col style="width:..."> でインラインで指定（table-layout:fixed と組み合わせ） */
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <h1>施工事例 マッピング（内部用）</h1>
+    <div class="step-toggle">
+      <button id="step1-btn" class="active">Step 1: グルーピング</button>
+      <button id="step2-btn">Step 2: メタデータ入力</button>
+    </div>
+    <button class="primary" id="btn-save">💾 書き出す</button>
+    <button id="btn-import">📂 読み込み</button>
+    <input type="file" id="file-import" accept="application/json" hidden>
+    <button class="danger" id="btn-clear">リセット</button>
+    <span class="saved" id="saved-status">未保存</span>
+  </div>
+
+  <main>
+    <div class="help" id="help-step1">
+      <b>Step 1:</b> 各画像に <b>案件ID</b> を入力してください（例: C1, C2 …）。同じIDを入力した画像は1つの案件としてグループ化されます。<br>
+      画像クリックで拡大。プリフィル済み（Excel原文＋画像認識ベース）。間違いがあれば直接編集 → 自動保存。<br>
+      終わったら <b>「Step 2」</b> へ進んでください。
+    </div>
+    <div class="help" id="help-step2" hidden>
+      <b>Step 2:</b> 案件ごとにメタデータを入力。1行＝1案件で、所属画像が左にサムネイル表示されます。<br>
+      終わったら <b>「💾 書き出す」</b> で <code>case_mapping.json</code> をダウンロード → <code>/Users/yukitakeshia/Documents/GitHub/hachikujyo-arai/_case_mapping.json</code> に保存して Claude に「マッピング読んで」と伝えてください。
+    </div>
+
+    <div class="stats">
+      <span>掲載: <b id="stat-include">0</b>/29</span>
+      <span>案件数: <b id="stat-cases">0</b></span>
+      <span>未グループ画像: <b id="stat-ungrouped">0</b></span>
+      <span>料金記入済: <b id="stat-price">0</b></span>
+    </div>
+
+    <!-- ====== STEP 1 ====== -->
+    <div id="step1-view">
+      <table class="tbl">
+        <colgroup>
+          <col style="width:40px">
+          <col style="width:104px">
+          <col style="width:130px">
+          <col style="width:200px">
+          <col style="width:50px">
+          <col style="width:auto">
+          <col style="width:240px">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>画像</th>
+            <th>ファイル名</th>
+            <th>ペア相手 / 案件</th>
+            <th>掲載</th>
+            <th>見た目（自動分析）</th>
+            <th>原文（Excel近接テキスト）</th>
+          </tr>
+        </thead>
+        <tbody id="step1-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- ====== STEP 2 ====== -->
+    <div id="step2-view" hidden>
+      <table class="tbl">
+        <colgroup>
+          <col style="width:64px">
+          <col style="width:200px">
+          <col style="width:70px">
+          <col style="width:110px">
+          <col style="width:130px">
+          <col style="width:150px">
+          <col style="width:90px">
+          <col style="width:120px">
+          <col style="width:auto">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>案件ID</th>
+            <th>画像</th>
+            <th>月</th>
+            <th>種類</th>
+            <th>場所</th>
+            <th>作業内容</th>
+            <th>料金</th>
+            <th>エリア</th>
+            <th>備考</th>
+          </tr>
+        </thead>
+        <tbody id="step2-tbody"></tbody>
+      </table>
+    </div>
+
+    <div id="export-area" hidden>
+      <h2>📋 書き出されたJSON</h2>
+      <textarea id="export-text" readonly></textarea>
+      <div class="actions-inline">
+        <button id="btn-copy">クリップボードへコピー</button>
+        <button id="btn-download">再ダウンロード</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="lightbox" onclick="this.classList.remove('show')"><img id="lightbox-img" src=""></div>
+
+  <script>
+    // ====== データ ======
+    const CASES = [
+      { id: "case_n01", caseGroup: "C11", visual: "黒い粘着シート2枚をアスファルト上に。捕獲された蜂多数",
+        raw: "（近接テキスト無し）", origin: "image1.jpeg / M1:O10",
+        prefill: { include: true, month: "9月", species: "スズメバチ", location: "屋外", workType: "巣3つ／高所作業（残蜂捕獲）", price: "77,000円", notes: "case_n11と同案件C11の残蜂処理写真" } },
+      { id: "case_n02", caseGroup: "C12", visual: "コンクリブロックの隅。明確な蜂・巣は確認しづらい",
+        raw: "高所作業 / 22,000円 / 9月 / オオスズメバチ / 地中 / 66,000円", origin: "image2.jpeg / F36:I46",
+        prefill: { include: true, month: "9月", species: "オオスズメバチ", location: "地中", workType: "地中作業", price: "66,000円", notes: "原文はオオスズメバチ地中66,000円。case_n13/n14の地中案件と同C12の可能性" } },
+      { id: "case_n03", caseGroup: "C5a", visual: "床下/暗所の風景（コンクリブロック壁、土の床）",
+        raw: "6月 / スズメバチ / 高所作業 / 38,500円", origin: "image3.jpeg / B1:E8",
+        prefill: { include: true, month: "6月", species: "スズメバチ", location: "（要確認）", workType: "高所作業", price: "38,500円", notes: "Excel原文准拠。画像は床下風景に見える。要クライアント確認" } },
+      { id: "case_n04", caseGroup: "C5a", visual: "暗所の大型蜂の巣（黄褐色、構造物の中）",
+        raw: "（近接テキスト無し）", origin: "image4.jpeg / E1:H8",
+        prefill: { include: true, month: "6月", species: "スズメバチ", location: "（要確認）", workType: "高所作業", price: "38,500円", notes: "case_n03とPAIR" } },
+      { id: "case_n05", caseGroup: "C5b", visual: "庭木の枝の中に灰色の小さなアシナガバチ巣",
+        raw: "高所作業 / 38,500円 / スズメバチに刺された跡", origin: "image5.jpeg / B17:D26",
+        prefill: { include: true, month: "6月", species: "スズメバチ", location: "庭木", workType: "高所作業", price: "38,500円", notes: "原文「高所作業/38,500円」を採用。「刺され跡」はn12のテキスト混入" } },
+      { id: "case_n06", caseGroup: "C12", visual: "スズメバチ巣の解体写真（内部、オレンジ色のスズメバチ多数）",
+        raw: "（近接テキスト無し）", origin: "image6.jpeg / I36:K46",
+        prefill: { include: true, month: "9月", species: "オオスズメバチ", location: "地中（撤去後）", workType: "解体写真", price: "66,000円", notes: "case_n02と同案件C12の解体写真" } },
+      { id: "case_n07", caseGroup: "C7", visual: "古民家の瓦屋根、軒下に小さな巣",
+        raw: "床下 / 44,000円 / 5月 / 5月 / アシナガバチ / スズメバチ / 追加費用なし / 追加費用無し / 11,000円 / 22,000円", origin: "image7.jpeg / B9:E16",
+        prefill: { include: true, month: "5月", species: "スズメバチ", location: "床下", workType: "床下作業", price: "44,000円", notes: "原文「床下/44,000円」を採用" } },
+      { id: "case_n08", caseGroup: "C8", visual: "撤去済み茶色球形スズメバチ巣（トレーに）",
+        raw: "5月 / スズメバチ / 追加費用無し / 22,000円", origin: "image8.jpeg / E8:H16",
+        prefill: { include: true, month: "5月", species: "スズメバチ", location: "（撤去後）", workType: "追加費用無し", price: "22,000円", notes: "Excel原文准拠" } },
+      { id: "case_n09", caseGroup: "C13", visual: "撤去済みスズメバチ巣（卵が見える）+ トング",
+        raw: "9月 / スズメバチ / 高所作業", origin: "image9.jpeg / U21:W30",
+        prefill: { include: true, month: "9月", species: "スズメバチ", location: "（撤去後）", workType: "高所作業", price: "", notes: "Excel原文准拠。料金欠落" } },
+      { id: "case_n10", caseGroup: "C8b", visual: "複数の大型撤去済み巣（集合写真）",
+        raw: "7月 / スズメバチ / 軽作業 / 36,300円", origin: "image10.jpeg / R1:T10",
+        prefill: { include: true, month: "7月", species: "スズメバチ", location: "（撤去後）", workType: "軽作業", price: "36,300円", notes: "case_n25とPAIR" } },
+      { id: "case_n11", caseGroup: "C11", visual: "撤去済みの巣（複数の塊）",
+        raw: "9月 / スズメバチ / 巣3つ / 高所作業", origin: "image11.jpeg / K1:M10",
+        prefill: { include: true, month: "9月", species: "スズメバチ", location: "（撤去後）", workType: "巣3つ／高所作業", price: "77,000円", notes: "case_n01とPAIR" } },
+      { id: "case_n12", caseGroup: "C4", visual: "人の腰のスズメバチ刺され跡（赤い炎症）",
+        raw: "5月 / スズメバチ / 高所作業 / 27,500円", origin: "image12.jpeg / B28:D37",
+        prefill: { include: false, month: "5月", species: "スズメバチ", location: "", workType: "刺され跡（注意喚起）", price: "27,500円", notes: "刺され跡。施工事例ではなく注意喚起コンテンツ用に推奨" } },
+      { id: "case_n13", caseGroup: "C12", visual: "木の根元の地中にスズメバチ巣（むき出し）",
+        raw: "（近接テキスト無し）", origin: "image13.jpeg / G48:I57",
+        prefill: { include: true, month: "9月", species: "オオスズメバチ", location: "地中（木の根元）", workType: "地中作業", price: "66,000円", notes: "case_n14とPAIR、case_n02/n06と同案件C12" } },
+      { id: "case_n14", caseGroup: "C12", visual: "木の根元に粘着シート、大量のオオスズメバチ捕獲",
+        raw: "（近接テキスト無し）", origin: "image14.jpeg / I48:K58",
+        prefill: { include: true, month: "9月", species: "オオスズメバチ", location: "地中（残蜂捕獲）", workType: "地中作業／粘着シート", price: "66,000円", notes: "case_n13とPAIR" } },
+      { id: "case_n15", caseGroup: "C7b", visual: "樹上の小さな巣（高所、枝の中）",
+        raw: "（近接テキスト無し）", origin: "image15.jpeg / Q33:S42",
+        prefill: { include: true, month: "7月", species: "スズメバチ", location: "樹上", workType: "高所作業", price: "44,000円", notes: "case_n16とPAIR" } },
+      { id: "case_n16", caseGroup: "C7b", visual: "道路際の植栽の中に巣、駐車場のコーン置き",
+        raw: "7月 / スズメバチ / 高所作業 / 44,000円", origin: "image16.jpeg / N33:P42",
+        prefill: { include: true, month: "7月", species: "スズメバチ", location: "樹上（道路際）", workType: "高所作業", price: "44,000円", notes: "case_n15とPAIR" } },
+      { id: "case_n17", caseGroup: "C5c", visual: "庭の植え込みの根元に大きな球形のスズメバチ巣",
+        raw: "6月 / スズメバチ / 高所作業 / 38,500円", origin: "image17.jpeg / R11:U19",
+        prefill: { include: true, month: "6月", species: "スズメバチ", location: "庭の植え込み", workType: "高所作業", price: "38,500円", notes: "Excel原文准拠。SOLO" } },
+      { id: "case_n18", caseGroup: "C10", visual: "アスファルトに3つの撤去済みスズメバチ巣（大型）",
+        raw: "8月 / スズメバチ / 屋根裏 / 高所作業", origin: "image18.jpeg / K12:M19",
+        prefill: { include: true, month: "8月", species: "スズメバチ", location: "屋根裏", workType: "屋根裏／高所作業", price: "55,000円", notes: "Excel原文＋関連事例から55,000円推定" } },
+      { id: "case_n19", caseGroup: "C8b", visual: "換気口の格子に大量のスズメバチ捕獲",
+        raw: "36,300円 / 9月", origin: "image19.jpeg / M21:P28",
+        prefill: { include: true, month: "9月", species: "スズメバチ", location: "（換気口）", workType: "高所作業／捕獲", price: "36,300円", notes: "case_n21と同案件と推定" } },
+      { id: "case_n20", caseGroup: "C11", visual: "軒下の通気口/格子場所にスズメバチ集団",
+        raw: "巣3つ / 高所作業 / 77,000円 / 9月 / スズメバチ / 追加費用無し", origin: "image20.jpeg / K20:M30",
+        prefill: { include: true, month: "9月", species: "スズメバチ", location: "屋外（通気口）", workType: "巣3つ／高所作業", price: "77,000円", notes: "原文先頭部を採用。case_n11/n01と同C11" } },
+      { id: "case_n21", caseGroup: "C8b", visual: "暗い空間（床下or屋根裏）に縦長の巣",
+        raw: "36,300円", origin: "image21.jpeg / P21:R30",
+        prefill: { include: true, month: "9月", species: "スズメバチ", location: "（屋根裏）", workType: "高所作業", price: "36,300円", notes: "case_n19と同案件と推定" } },
+      { id: "case_n22", caseGroup: "C11", visual: "軒下の梁にスズメバチの大きな球形巣",
+        raw: "9月/スズメバチ/巣3つ/高所作業/77,000円 / 6月/アシナガバチ/高所作業/22,000円", origin: "image22.jpeg / F17:I26",
+        prefill: { include: true, month: "9月", species: "スズメバチ", location: "軒下", workType: "巣3つ／高所作業", price: "77,000円", notes: "原文先頭部採用。case_n11案件C11" } },
+      { id: "case_n23", caseGroup: "C15", visual: "軒下にアシナガバチの大群（蜂の塊）",
+        raw: "スズメバチ/屋根裏/高所作業/55,000円 / 7月/スズメバチ/高所作業/44,000円", origin: "image23.jpeg / G28:J35",
+        prefill: { include: true, month: "", species: "スズメバチ", location: "屋根裏", workType: "屋根裏／高所作業", price: "55,000円", notes: "画像はアシナガバチ似。要確認" } },
+      { id: "case_n24", caseGroup: "C9", visual: "窓枠の上にアシナガバチ（or小型スズメバチ）の小さな巣",
+        raw: "8月 / スズメバチ / 高所作業 / 38,500円", origin: "image24.jpeg / B38:D47",
+        prefill: { include: true, month: "8月", species: "スズメバチ", location: "窓枠上", workType: "高所作業", price: "38,500円", notes: "Excel原文准拠" } },
+      { id: "case_n25", caseGroup: "C8b", visual: "タイル床に粘着シート、捕獲済み蜂と巣の破片",
+        raw: "（近接テキスト無し）", origin: "image25.jpeg / T1:W8",
+        prefill: { include: true, month: "7月", species: "スズメバチ", location: "屋内（タイル床）", workType: "軽作業／捕獲", price: "36,300円", notes: "case_n10とPAIR" } },
+      { id: "case_n26", caseGroup: "C16", visual: "雨樋の裏にスズメバチ大型巣（縦長）",
+        raw: "（近接テキスト無し）", origin: "image26.jpeg / B48:D58",
+        prefill: { include: true, month: "", species: "スズメバチ", location: "雨樋の裏", workType: "高所作業", price: "", notes: "近接テキスト空。要確認" } },
+      { id: "case_n27", caseGroup: "C17", visual: "屋根の梁裏に大型スズメバチ巣",
+        raw: "（近接テキスト無し）", origin: "image27.jpeg / N43:P53",
+        prefill: { include: true, month: "", species: "スズメバチ", location: "屋根裏（梁）", workType: "屋根裏／高所作業", price: "", notes: "case_n29とPAIR推定" } },
+      { id: "case_n28", caseGroup: "C10", visual: "大型スズメバチ巣の内部解体写真（セル構造、卵）",
+        raw: "（近接テキスト無し）", origin: "image28.jpeg / U32:W42",
+        prefill: { include: true, month: "8月", species: "スズメバチ", location: "屋根裏（撤去後）", workType: "解体写真", price: "55,000円", notes: "case_n18（C10）の撤去後解体写真" } },
+      { id: "case_n29", caseGroup: "C17", visual: "屋根の梁に粘着シート、捕獲されたスズメバチ",
+        raw: "（近接テキスト無し）", origin: "image29.jpeg / P43:S51",
+        prefill: { include: true, month: "", species: "スズメバチ", location: "屋根（残蜂処理）", workType: "粘着シート捕獲", price: "", notes: "case_n27とPAIR推定" } },
+    ];
+
+    const STORAGE_KEY = "case_mapping_v5";
+    const SPECIES_OPTIONS = ["", "スズメバチ", "オオスズメバチ", "アシナガバチ", "ミツバチ", "その他"];
+    const MONTH_OPTIONS = ["", "1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+
+    function loadState() {
+      try {
+        const s = localStorage.getItem(STORAGE_KEY);
+        if (s) return JSON.parse(s);
+      } catch (e) {}
+      return {
+        version: 4,
+        savedAt: null,
+        cases: CASES.map(c => ({
+          id: c.id,
+          caseGroup: c.caseGroup,
+          include: c.prefill.include !== false,
+          month: c.prefill.month || "",
+          species: c.prefill.species || "",
+          location: c.prefill.location || "",
+          workType: c.prefill.workType || "",
+          price: c.prefill.price || "",
+          duration: c.prefill.duration || "",
+          area: c.prefill.area || "",
+          notes: c.prefill.notes || ""
+        })),
+        // 案件ごとのメタデータ（Step 2用）
+        groupMeta: {}
+      };
+    }
+
+    let state = loadState();
+    let step = 1;
+
+    function saveState() {
+      state.savedAt = new Date().toISOString();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      document.getElementById("saved-status").textContent =
+        "自動保存: " + new Date().toLocaleTimeString("ja-JP");
+      updateStats();
+    }
+
+    function getGroups() {
+      const groups = {};
+      state.cases.forEach((c, i) => {
+        const g = (c.caseGroup || "").trim();
+        if (!g) return;
+        if (!groups[g]) groups[g] = [];
+        groups[g].push(i);
+      });
+      return groups;
+    }
+
+    function getOrInitGroupMeta(gid) {
+      if (!state.groupMeta) state.groupMeta = {};
+      if (!state.groupMeta[gid]) {
+        // 最初の所属画像から案件メタを引き継ぐ
+        const groups = getGroups();
+        const idx = (groups[gid] || [])[0];
+        if (idx !== undefined) {
+          const c = state.cases[idx];
+          state.groupMeta[gid] = {
+            month: c.month || "", species: c.species || "", location: c.location || "",
+            workType: c.workType || "", price: c.price || "", duration: c.duration || "",
+            area: c.area || "", notes: c.notes || "", include: c.include
+          };
+        } else {
+          state.groupMeta[gid] = { month:"", species:"", location:"", workType:"", price:"", duration:"", area:"", notes:"", include: true };
+        }
+      }
+      return state.groupMeta[gid];
+    }
+
+    function updateStats() {
+      const inc = state.cases.filter(c => c.include).length;
+      const groups = getGroups();
+      const groupCount = Object.keys(groups).length;
+      const ungrouped = state.cases.filter(c => !c.caseGroup || !c.caseGroup.trim()).length;
+      const pri = Object.values(state.groupMeta || {}).filter(m => m.price && m.price.trim()).length;
+      document.getElementById("stat-include").textContent = inc;
+      document.getElementById("stat-cases").textContent = groupCount;
+      document.getElementById("stat-ungrouped").textContent = ungrouped;
+      document.getElementById("stat-price").textContent = pri;
+    }
+
+    function escapeHtml(s) { return String(s||"").replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[c])); }
+    function escapeAttr(s) { return escapeHtml(s); }
+
+    function selectHtml(value, options, attrs = "") {
+      return `<select ${attrs}>` +
+        options.map(o => `<option value="${escapeAttr(o)}" ${o===value?"selected":""}>${o||"（未指定）"}</option>`).join("") +
+        `</select>`;
+    }
+
+    function openLightbox(src) {
+      document.getElementById("lightbox-img").src = src;
+      document.getElementById("lightbox").classList.add("show");
+    }
+
+    // ====== グループ色（caseGroup単位） ======
+    const COLOR_PALETTE = [
+      "#fef3c7", "#dbeafe", "#fce7f3", "#dcfce7", "#fed7aa",
+      "#e0e7ff", "#cffafe", "#f3e8ff", "#ecfccb", "#fee2e2",
+      "#ddd6fe", "#fde68a", "#bae6fd", "#fbcfe8", "#bbf7d0",
+      "#fdba74", "#a5b4fc", "#67e8f9", "#d8b4fe", "#bef264"
+    ];
+    function colorForGroup(gid) {
+      if (!gid) return null;
+      const groups = getGroups();
+      const ordered = Object.keys(groups).sort();
+      const idx = ordered.indexOf(gid);
+      if (idx < 0) return null;
+      return COLOR_PALETTE[idx % COLOR_PALETTE.length];
+    }
+
+    // 全画像の中で「現在のcaseGroup」をベースにペア候補を集める
+    function getPartnerOptions(myIdx) {
+      const myGroup = state.cases[myIdx].caseGroup;
+      const opts = [];
+      state.cases.forEach((other, j) => {
+        if (j === myIdx) return;
+        const sameGroup = myGroup && other.caseGroup === myGroup;
+        opts.push({
+          value: other.id,
+          label: other.id.replace("case_","") + (other.caseGroup ? ` [${other.caseGroup}]` : ""),
+          selected: sameGroup
+        });
+      });
+      return opts;
+    }
+
+    // ペア相手を変更：相手と同じcaseGroupに所属させる
+    function pairWith(myIdx, partnerId) {
+      if (partnerId === "__solo__") {
+        // 単独に切り替え：新規ユニークID付与
+        state.cases[myIdx].caseGroup = "G_" + state.cases[myIdx].id.replace("case_","");
+      } else {
+        const partner = state.cases.find(c => c.id === partnerId);
+        if (!partner) return;
+        // 相手にcaseGroupが無ければ、相手にもユニークIDを付与してから合流
+        if (!partner.caseGroup || !partner.caseGroup.trim()) {
+          partner.caseGroup = "G_" + partner.id.replace("case_","");
+        }
+        state.cases[myIdx].caseGroup = partner.caseGroup;
+      }
+      saveState();
+      renderStep1();
+    }
+
+    // ====== STEP 1 ======
+    function renderStep1() {
+      const tbody = document.getElementById("step1-tbody");
+      tbody.innerHTML = state.cases.map((d, i) => {
+        const c = CASES[i];
+        const groups = getGroups();
+        const groupSize = groups[d.caseGroup] ? groups[d.caseGroup].length : 0;
+        const isPaired = groupSize >= 2;
+        const color = colorForGroup(d.caseGroup);
+        const otherMembers = (groups[d.caseGroup] || []).filter(j => j !== i).map(j => state.cases[j].id.replace("case_","")).join(", ");
+
+        // プルダウン選択肢
+        const partners = getPartnerOptions(i);
+        const myGroup = d.caseGroup;
+        const isInGroupWithOther = isPaired;
+        const optionsHtml = `
+          <option value="__solo__" ${!isInGroupWithOther?"selected":""}>（単独）</option>
+          ${partners.map(o => `<option value="${escapeAttr(o.value)}" ${o.selected?"selected":""}>${escapeHtml(o.label)}</option>`).join("")}
+        `;
+
+        const badge = isPaired
+          ? `<span class="group-badge paired">📎 ${escapeHtml(d.caseGroup)} (${groupSize}枚)</span>`
+          : `<span class="group-badge">単独 ${d.caseGroup ? "[" + escapeHtml(d.caseGroup) + "]" : ""}</span>`;
+
+        const otherInfo = isPaired ? `<div style="font-size:11px;color:#666;margin-top:2px;">→ ${escapeHtml(otherMembers)}</div>` : "";
+
+        return `
+          <tr class="${!d.include?"exclude":""} ${color?"grouped":""}" style="${color?`--g-color:${color};background:${color}66;`:""}">
+            <td>${i+1}</td>
+            <td><img class="thumb" src="images/${c.id}.jpg" alt="${c.id}" onclick="openLightbox(this.src)"></td>
+            <td><b>${c.id}.jpg</b></td>
+            <td>
+              <select class="partner-select" data-pair-i="${i}">${optionsHtml}</select>
+              <div>${badge}</div>
+              ${otherInfo}
+            </td>
+            <td><input type="checkbox" data-i="${i}" data-f="include" ${d.include?"checked":""}></td>
+            <td class="visual-cell">${escapeHtml(c.visual)}</td>
+            <td class="raw-cell"><b>${escapeHtml(c.origin)}</b>${escapeHtml(c.raw)}</td>
+          </tr>
+        `;
+      }).join("");
+      tbody.addEventListener("input", onStep1Change);
+      tbody.addEventListener("change", onStep1Change);
+    }
+
+    function onStep1Change(e) {
+      const t = e.target;
+      // ペア相手プルダウン
+      if (t.dataset.pairI !== undefined) {
+        const i = parseInt(t.dataset.pairI, 10);
+        pairWith(i, t.value);
+        return;
+      }
+      const i = parseInt(t.dataset.i, 10);
+      const f = t.dataset.f;
+      if (Number.isNaN(i) || !f) return;
+      if (f === "include") state.cases[i].include = t.checked;
+      else state.cases[i][f] = t.value;
+      saveState();
+      // 掲載状態の変更で行クラスを更新
+      if (f === "include") {
+        const tr = t.closest("tr");
+        if (tr) tr.classList.toggle("exclude", !t.checked);
+      }
+    }
+
+    // ====== STEP 2 ======
+    function renderStep2() {
+      const tbody = document.getElementById("step2-tbody");
+      const groups = getGroups();
+      const ordered = Object.keys(groups).sort((a,b) => {
+        const na = parseInt(a.replace(/[^0-9]/g,""),10) || 999;
+        const nb = parseInt(b.replace(/[^0-9]/g,""),10) || 999;
+        if (na !== nb) return na - nb;
+        return a.localeCompare(b);
+      });
+      tbody.innerHTML = ordered.map(gid => {
+        const idxs = groups[gid];
+        const meta = getOrInitGroupMeta(gid);
+        const color = colorForGroup(gid);
+        const isPaired = idxs.length >= 2;
+        const imgs = idxs.map(i => {
+          const cid = state.cases[i].id;
+          return `<div class="item"><img class="thumb" src="images/${cid}.jpg" alt="${cid}" onclick="openLightbox(this.src)"><small>${cid.replace("case_","")}</small></div>`;
+        }).join("");
+        return `
+          <tr class="${!meta.include?"exclude":""} ${color&&isPaired?"grouped":""}" style="${color&&isPaired?`--g-color:${color};background:${color}66;`:""}">
+            <td><b>${escapeHtml(gid)}</b>${isPaired?` <small style="color:#3730a3;">(${idxs.length}枚)</small>`:""}<br><label style="font-size:11px;color:#666;"><input type="checkbox" data-g="${escapeAttr(gid)}" data-f="include" ${meta.include?"checked":""}> 掲載</label></td>
+            <td><div class="thumb-list">${imgs}</div></td>
+            <td>${selectHtml(meta.month, MONTH_OPTIONS, `data-g="${escapeAttr(gid)}" data-f="month"`)}</td>
+            <td>${selectHtml(meta.species, SPECIES_OPTIONS, `data-g="${escapeAttr(gid)}" data-f="species"`)}</td>
+            <td><input type="text" data-g="${escapeAttr(gid)}" data-f="location" value="${escapeAttr(meta.location)}" placeholder="軒下／屋根裏／床下"></td>
+            <td><input type="text" data-g="${escapeAttr(gid)}" data-f="workType" value="${escapeAttr(meta.workType)}" placeholder="高所作業"></td>
+            <td><input type="text" data-g="${escapeAttr(gid)}" data-f="price" value="${escapeAttr(meta.price)}" placeholder="22,000円"></td>
+            <td><input type="text" data-g="${escapeAttr(gid)}" data-f="area" value="${escapeAttr(meta.area)}" placeholder="福岡市南区"></td>
+            <td><textarea data-g="${escapeAttr(gid)}" data-f="notes">${escapeHtml(meta.notes)}</textarea></td>
+          </tr>
+        `;
+      }).join("");
+      tbody.addEventListener("input", onStep2Change);
+      tbody.addEventListener("change", onStep2Change);
+    }
+
+    function onStep2Change(e) {
+      const t = e.target;
+      const g = t.dataset.g;
+      const f = t.dataset.f;
+      if (!g || !f) return;
+      const meta = getOrInitGroupMeta(g);
+      if (f === "include") meta.include = t.checked;
+      else meta[f] = t.value;
+      saveState();
+    }
+
+    function showStep(n) {
+      step = n;
+      document.getElementById("step1-view").hidden = (n !== 1);
+      document.getElementById("step2-view").hidden = (n !== 2);
+      document.getElementById("help-step1").hidden = (n !== 1);
+      document.getElementById("help-step2").hidden = (n !== 2);
+      document.getElementById("step1-btn").classList.toggle("active", n === 1);
+      document.getElementById("step2-btn").classList.toggle("active", n === 2);
+      if (n === 1) renderStep1();
+      else renderStep2();
+      updateStats();
+    }
+
+    document.getElementById("step1-btn").addEventListener("click", () => showStep(1));
+    document.getElementById("step2-btn").addEventListener("click", () => showStep(2));
+
+    // ====== 書き出し ======
+    document.getElementById("btn-save").addEventListener("click", async () => {
+      saveState();
+      const groups = getGroups();
+      const exportData = {
+        version: state.version,
+        savedAt: state.savedAt,
+        cases: state.cases.map((d, i) => ({
+          ...d,
+          visual: CASES[i].visual,
+          rawText: CASES[i].raw,
+          origin: CASES[i].origin,
+          imagePath: `docs/images/${d.id}.jpg`
+        })),
+        groups: Object.keys(groups).sort().map(gid => ({
+          id: gid,
+          imageIds: groups[gid].map(i => state.cases[i].id),
+          ...getOrInitGroupMeta(gid)
+        }))
+      };
+      const json = JSON.stringify(exportData, null, 2);
+
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "case_mapping.json";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      try { await navigator.clipboard.writeText(json); } catch (e) {}
+
+      const area = document.getElementById("export-area");
+      area.hidden = false;
+      document.getElementById("export-text").value = json;
+      area.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    document.getElementById("btn-copy").addEventListener("click", async () => {
+      const ta = document.getElementById("export-text");
+      ta.select();
+      try { await navigator.clipboard.writeText(ta.value); alert("コピーしました"); }
+      catch (e) { document.execCommand("copy"); }
+    });
+
+    document.getElementById("btn-download").addEventListener("click", () => {
+      const json = document.getElementById("export-text").value;
+      const blob = new Blob([json], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = "case_mapping.json";
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("btn-import").addEventListener("click", () => {
+      document.getElementById("file-import").click();
+    });
+    document.getElementById("file-import").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        try {
+          const obj = JSON.parse(ev.target.result);
+          if (!obj.cases || !Array.isArray(obj.cases)) throw new Error("形式が不正");
+          const newGroupMeta = {};
+          if (obj.groups && Array.isArray(obj.groups)) {
+            obj.groups.forEach(g => { newGroupMeta[g.id] = {
+              month: g.month||"", species: g.species||"", location: g.location||"",
+              workType: g.workType||"", price: g.price||"", duration: g.duration||"",
+              area: g.area||"", notes: g.notes||"", include: g.include !== false
+            };});
+          }
+          state = { version: obj.version || 4, savedAt: obj.savedAt, cases: obj.cases.map(c => ({
+            id: c.id, caseGroup: c.caseGroup||"", include: c.include, month: c.month||"", species: c.species||"", location: c.location||"",
+            workType: c.workType||"", price: c.price||"", duration: c.duration||"", area: c.area||"", notes: c.notes||""
+          })), groupMeta: newGroupMeta };
+          saveState();
+          showStep(step);
+          alert("読み込みました");
+        } catch (err) { alert("読み込み失敗: " + err.message); }
+      };
+      reader.readAsText(file);
+    });
+
+    document.getElementById("btn-clear").addEventListener("click", () => {
+      if (!confirm("入力したマッピング情報を全て削除し、プリフィル状態に戻します。よろしいですか？")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = loadState();
+      showStep(step);
+      document.getElementById("saved-status").textContent = "未保存";
+      document.getElementById("export-area").hidden = true;
+    });
+
+    showStep(1);
+    if (state.savedAt) {
+      document.getElementById("saved-status").textContent =
+        "自動保存: " + new Date(state.savedAt).toLocaleString("ja-JP");
+    }
+  </script>
+
+</body>
+</html>
