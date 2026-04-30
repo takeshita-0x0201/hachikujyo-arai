@@ -554,16 +554,26 @@ a.case-item:hover {
   gap: 12px;
   margin-top: 16px;
 }
-.case-detail-photos.count-1 { grid-template-columns: 1fr; max-width: 720px; margin-left: auto; margin-right: auto; }
+.case-detail-photos.count-1 { grid-template-columns: 1fr; max-width: 600px; margin-left: auto; margin-right: auto; }
 .case-detail-photos.count-2 { grid-template-columns: 1fr 1fr; }
 .case-detail-photos.count-3 { grid-template-columns: 1fr 1fr 1fr; }
 .case-detail-photos img {
   width: 100%;
   height: auto;
-  max-height: 480px;
-  object-fit: cover;
   border-radius: var(--radius-md);
   cursor: zoom-in;
+  display: block;
+}
+/* 複数枚は揃えるため高さ固定＋cover */
+.case-detail-photos.count-2 img,
+.case-detail-photos.count-3 img {
+  max-height: 480px;
+  object-fit: cover;
+}
+/* 1枚事例は自然なアスペクト比で表示（引き伸ばし・トリミングなし） */
+.case-detail-photos.count-1 img {
+  height: auto;
+  object-fit: contain;
 }
 @media (max-width: 768px) {
   .case-detail-photos.count-2,
