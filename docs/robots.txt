@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /_case_preview.html
+Disallow: /_case_mapping.json
+
+Sitemap: https://www.hachikujyo-arai.com/sitemap.xml
