@@ -70,9 +70,11 @@ function renderMobileMenu() {
     <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
     <div class="mobile-menu-body">
       <button class="mobile-menu-close" aria-label="メニューを閉じる" onclick="closeMobileMenu()">&times;</button>
-      <ul class="mobile-menu-nav">
-        ${menuItems}
-      </ul>
+      <nav aria-label="モバイルナビゲーション">
+        <ul class="mobile-menu-nav">
+          ${menuItems}
+        </ul>
+      </nav>
       <div class="mobile-menu-tel">
         <a href="tel:${SITE.telRaw}">${SITE.tel}<small>24時間受付・電話見積り無料</small></a>
       </div>
@@ -158,7 +160,13 @@ let _mobileMenuKeyHandler = null;
 function openMobileMenu() {
   const menu = document.getElementById('mobile-menu');
   const btn = document.querySelector('.header-hamburger');
-  if (!menu) return;
+  if (!menu || menu.classList.contains('is-open')) return;
+
+  // 念のため既存ハンドラを除去（再入時のリーク防止）
+  if (_mobileMenuKeyHandler) {
+    document.removeEventListener('keydown', _mobileMenuKeyHandler);
+    _mobileMenuKeyHandler = null;
+  }
 
   _mobileMenuPrevFocus = document.activeElement;
   menu.classList.add('is-open');
@@ -172,6 +180,7 @@ function openMobileMenu() {
 
   // Esc / Tab ハンドラ（フォーカストラップ）
   _mobileMenuKeyHandler = function(e) {
+    if (!menu.classList.contains('is-open')) return;
     if (e.key === 'Escape') {
       e.preventDefault();
       closeMobileMenu();
