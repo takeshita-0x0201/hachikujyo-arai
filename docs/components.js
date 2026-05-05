@@ -15,11 +15,11 @@ const SITE = {
 };
 
 // LINE公式アカウント設定（一元管理）
-//   - 開設後はこの url を友だち追加URL（例: https://lin.ee/xxxxxx）に書き換えるだけで
-//     全ページのLINEボタン（共通CTA・SP固定CTA・index.html FV・contact.html）に反映される。
+//   - この url を変更するだけで全ページのLINEボタンに反映される
+//     （共通CTA・SP固定CTA・index.html FV・contact.html）。
 //   - 静的HTML側のLINEリンクは data-line-link 属性で自動置換（applyLineLinks() 参照）。
 const LINE = {
-  url: '#',
+  url: 'https://lin.ee/PNW477g',
   label: 'LINEで相談',
 };
 
@@ -129,6 +129,7 @@ function renderFooter() {
         <nav class="footer-nav" aria-label="フッターナビ">
           <ul>
             ${footerLinks}
+            <li><a href="privacy.html">プライバシーポリシー</a></li>
           </ul>
         </nav>
       </div>

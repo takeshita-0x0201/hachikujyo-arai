@@ -101,6 +101,9 @@
     </section>
 
     <!-- ===== Form ===== -->
+    <!-- TODO(WordPress): WP化時に Contact Form 7 / WPForms 等のプラグインで送信処理を実装。
+         action 属性、CSRFトークン、reCAPTCHA、サンクスページ遷移を組み込む。
+         本フォームは見た目（フィールド・必須項目・同意導線）の参考実装。 -->
     <section>
       <div class="container">
         <h2>フォームでのお問い合わせ</h2>
@@ -156,6 +159,12 @@
           <div class="form-group">
             <label for="message">お問い合わせ内容</label>
             <textarea id="message" name="message" rows="6" placeholder="蜂の巣の大きさや状況など、わかる範囲でお書きください。"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="consent-label">
+              <input type="checkbox" id="privacy-consent" name="privacy-consent" required>
+              <a href="privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a>に同意の上、送信します。
+            </label>
           </div>
           <div class="form-group">
             <button type="submit" class="btn-submit">送信する</button>
