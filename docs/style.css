@@ -1101,6 +1101,42 @@ summary:focus-visible,
   outline-offset: 2px;
 }
 
+/* --- Responsive: タブレット〜小型ノートPC (768〜1024px) --- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  body { font-size: 15px; }
+
+  /* ヘッダー詰め（タップ領域は44px以上を確保） */
+  .header-inner { padding: 8px 16px; }
+  .header-nav { gap: 12px; }
+  .header-nav a {
+    font-size: 13px;
+    padding: 10px 8px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .header-tel a { font-size: 14px; }
+  .header-tel small { font-size: 11px; }
+
+  /* FV：写真幅縮小 */
+  .fv-inner { gap: 24px; }
+  .fv-photo { flex: 0 0 280px; }
+  .fv-catch { font-size: 26px; }
+
+  /* 事例グリッドを2カラムに */
+  .case-grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* 価格表のフォント縮小 */
+  .price-table { font-size: 14px; }
+  .price-table th, .price-table td { padding: 8px 10px; }
+
+  /* エリア地図縮小 */
+  .area-map { flex: 0 0 320px; }
+
+  /* セクション余白控えめ */
+  section { padding: 40px 0; }
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   body { font-size: 15px; padding-bottom: 64px; }

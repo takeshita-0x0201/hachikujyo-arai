@@ -53,7 +53,8 @@ function renderHeader() {
         <a href="tel:${SITE.telRaw}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>${SITE.tel}</a>
       </div>
       <button class="header-hamburger" aria-label="メニューを開く" aria-expanded="false"
-        onclick="document.getElementById('mobile-menu').classList.add('is-open'); this.setAttribute('aria-expanded','true')">&#9776;</button>
+        aria-controls="mobile-menu" aria-haspopup="dialog"
+        onclick="openMobileMenu()">&#9776;</button>
     </div>
   </header>`;
 }
@@ -65,13 +66,15 @@ function renderMobileMenu() {
   ).join('\n        ');
 
   return `
-  <div id="mobile-menu" class="mobile-menu">
+  <div id="mobile-menu" class="mobile-menu" role="dialog" aria-modal="true" aria-label="メニュー" aria-hidden="true">
     <div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
     <div class="mobile-menu-body">
-      <button class="mobile-menu-close" aria-label="閉じる" onclick="closeMobileMenu()">&times;</button>
-      <ul class="mobile-menu-nav">
-        ${menuItems}
-      </ul>
+      <button class="mobile-menu-close" aria-label="メニューを閉じる" onclick="closeMobileMenu()">&times;</button>
+      <nav aria-label="モバイルナビゲーション">
+        <ul class="mobile-menu-nav">
+          ${menuItems}
+        </ul>
+      </nav>
       <div class="mobile-menu-tel">
         <a href="tel:${SITE.telRaw}">${SITE.tel}<small>24時間受付・電話見積り無料</small></a>
       </div>
@@ -150,11 +153,78 @@ function renderMobileFixedCTA() {
   </div>`;
 }
 
-// --- Close Mobile Menu ---
-function closeMobileMenu() {
-  document.getElementById('mobile-menu').classList.remove('is-open');
+// --- Mobile Menu Open/Close (a11y) ---
+let _mobileMenuPrevFocus = null;
+let _mobileMenuKeyHandler = null;
+
+function openMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
   const btn = document.querySelector('.header-hamburger');
+  if (!menu || menu.classList.contains('is-open')) return;
+
+  // 念のため既存ハンドラを除去（再入時のリーク防止）
+  if (_mobileMenuKeyHandler) {
+    document.removeEventListener('keydown', _mobileMenuKeyHandler);
+    _mobileMenuKeyHandler = null;
+  }
+
+  _mobileMenuPrevFocus = document.activeElement;
+  menu.classList.add('is-open');
+  menu.setAttribute('aria-hidden', 'false');
+  if (btn) btn.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+
+  // 初期フォーカスを最初のリンクへ
+  const firstLink = menu.querySelector('.mobile-menu-nav a');
+  if (firstLink) firstLink.focus();
+
+  // Esc / Tab ハンドラ（フォーカストラップ）
+  _mobileMenuKeyHandler = function(e) {
+    if (!menu.classList.contains('is-open')) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeMobileMenu();
+      return;
+    }
+    if (e.key === 'Tab') {
+      const focusable = menu.querySelectorAll('a[href], button:not([disabled])');
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  };
+  document.addEventListener('keydown', _mobileMenuKeyHandler);
+}
+
+function closeMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  const btn = document.querySelector('.header-hamburger');
+  if (menu) {
+    menu.classList.remove('is-open');
+    menu.setAttribute('aria-hidden', 'true');
+  }
   if (btn) btn.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+
+  if (_mobileMenuKeyHandler) {
+    document.removeEventListener('keydown', _mobileMenuKeyHandler);
+    _mobileMenuKeyHandler = null;
+  }
+  // 元のフォーカス位置に戻す（body などの場合はhamburgerへ）
+  const restoreTarget = (_mobileMenuPrevFocus && _mobileMenuPrevFocus !== document.body)
+    ? _mobileMenuPrevFocus
+    : btn;
+  if (restoreTarget && typeof restoreTarget.focus === 'function') {
+    restoreTarget.focus();
+  }
+  _mobileMenuPrevFocus = null;
 }
 
 // --- Inject Components ---
