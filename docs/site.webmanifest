@@ -1,0 +1,27 @@
+{
+  "name": "蜂駆除あらい",
+  "short_name": "蜂駆除あらい",
+  "description": "福岡県・佐賀県・熊本県の蜂駆除・鍵交換。24時間365日受付。",
+  "start_url": "./",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#FFC107",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
