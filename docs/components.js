@@ -14,7 +14,10 @@ const SITE = {
   hours: '24時間営業・年中無休',
 };
 
-// TODO: LINE公式アカウント開設後、url を友だち追加URL（例: https://lin.ee/xxxxxx）に差し替える
+// LINE公式アカウント設定（一元管理）
+//   - 開設後はこの url を友だち追加URL（例: https://lin.ee/xxxxxx）に書き換えるだけで
+//     全ページのLINEボタン（共通CTA・SP固定CTA・index.html FV・contact.html）に反映される。
+//   - 静的HTML側のLINEリンクは data-line-link 属性で自動置換（applyLineLinks() 参照）。
 const LINE = {
   url: '#',
   label: 'LINEで相談',
@@ -227,6 +230,16 @@ function closeMobileMenu() {
   _mobileMenuPrevFocus = null;
 }
 
+// --- Apply LINE URL to all elements with data-line-link ---
+// HTMLにハードコードしたLINEリンク（href="#"）を一括で LINE.url に置換。
+// LINE公式アカウント開設後は components.js の LINE.url のみ更新すれば全箇所に反映される。
+function applyLineLinks() {
+  const url = LINE.url || '#';
+  document.querySelectorAll('[data-line-link]').forEach(el => {
+    el.setAttribute('href', url);
+  });
+}
+
 // --- Inject Components ---
 document.addEventListener('DOMContentLoaded', function() {
   const headerEl = document.getElementById('component-header');
@@ -240,4 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (ctaEl) ctaEl.outerHTML = renderContactCTA();
   if (footerEl) footerEl.outerHTML = renderFooter();
   if (fixedCtaEl) fixedCtaEl.outerHTML = renderMobileFixedCTA();
+
+  // 静的HTML側のLINEリンクをLINE.urlで上書き
+  applyLineLinks();
 });
