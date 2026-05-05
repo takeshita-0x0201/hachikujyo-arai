@@ -1132,10 +1132,23 @@ summary:focus-visible,
   .header-tel a { font-size: 14px; }
   .header-tel small { font-size: 11px; }
 
-  /* FV：写真幅縮小 */
-  .fv-inner { gap: 24px; }
-  .fv-photo { flex: 0 0 280px; }
-  .fv-catch { font-size: 26px; }
+  /* FV：縦積みに切り替え（横並びだとコンテンツ側が詰まるため） */
+  .fv-inner {
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .fv-photo {
+    flex: none;
+    width: 100%;
+    max-height: 360px;
+  }
+  .fv-photo img {
+    object-position: center 30%;
+  }
+  .fv-catch { font-size: 28px; }
+  /* バッジは折り返しと余白を確保 */
+  .badges { flex-wrap: wrap; gap: 8px; }
 
   /* 事例グリッドを2カラムに */
   .case-grid { grid-template-columns: repeat(2, 1fr); }
