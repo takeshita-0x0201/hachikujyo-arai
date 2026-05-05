@@ -102,7 +102,7 @@ function renderContactCTA() {
           <span class="btn-line-text">${LINE.label}<small>友だち追加で写真相談OK</small></span>
         </a>
       </div>
-      <p class="contact-sub"><a href="contact.html">お問い合わせフォームはこちら</a></p>
+      <p class="contact-sub"><a href="contact.html">お問い合わせはこちら</a></p>
       <p class="info-row">
         ${SITE.name} ｜ ${SITE.address} ｜ ${SITE.hours}
       </p>

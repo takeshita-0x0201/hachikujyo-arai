@@ -1283,3 +1283,19 @@ summary:focus-visible,
   cursor: pointer;
 }
 .consent-label a { color: #0066CC; text-decoration: underline; }
+
+/* --- Privacy Policy Sections --- */
+.privacy-section {
+  margin-bottom: 32px;
+}
+.privacy-section:last-of-type {
+  margin-bottom: 0;
+}
+.privacy-section h2 {
+  margin-bottom: 12px;
+}
+.privacy-section p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: var(--color-text);
+}
