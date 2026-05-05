@@ -3,3 +3,6 @@
 
 # Extracted WP data (large directory)
 _wp_extracted/
+
+# Internal-only files (not deployed to GitHub Pages)
+internal/
