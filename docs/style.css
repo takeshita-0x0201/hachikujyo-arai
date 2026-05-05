@@ -809,6 +809,21 @@ a.case-item:hover {
   font-weight: 400;
   margin-top: 2px;
 }
+/* モバイル幅でボタン内テキストの折り返しを許容（はみ出し防止） */
+@media (max-width: 600px) {
+  .contact-cta-buttons .btn-tel,
+  .contact-cta-buttons .btn-line-large {
+    flex-wrap: wrap;
+    padding: 14px 16px;
+    font-size: 18px;
+    line-height: 1.4;
+  }
+  .contact-cta-buttons .btn-tel small {
+    flex-basis: 100%;
+    text-align: center;
+    margin-top: 2px;
+  }
+}
 .sec-contact .contact-sub {
   margin-top: 16px;
 }
