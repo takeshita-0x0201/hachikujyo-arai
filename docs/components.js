@@ -6,7 +6,7 @@
 
 const SITE = {
   name: '蜂駆除 あらい',
-  nameShort: '蜂駆除あらい',
+  nameShort: '蜂駆除 あらい',
   tagline: '福岡の蜂駆除',
   tel: '090-8451-0837',
   telRaw: '09084510837',
