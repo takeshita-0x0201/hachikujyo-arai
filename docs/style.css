@@ -1039,6 +1039,20 @@ section h3 + p + h3 {
 section h3 + p {
   margin-bottom: 8px;
 }
+/* リスト・テーブル・補足段落の後に続くH3に上余白を確保 */
+section ul + h3,
+section ol + h3,
+section table + h3,
+section .table-scroll + h3,
+section .price-note + h3,
+section ul + p + h3 {
+  margin-top: 32px;
+}
+/* リスト直後の補足段落（price-note 等）の上余白も少し */
+section ul + .price-note,
+section ol + .price-note {
+  margin-top: 8px;
+}
 .area-towns-list li {
   padding: 4px 12px;
   background: var(--color-accent-soft);
