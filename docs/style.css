@@ -1205,7 +1205,7 @@ summary:focus-visible,
   .fv { padding: 24px 0; }
   .fv-inner { flex-direction: column; gap: 20px; }
   .fv-photo { flex: none; width: 100%; height: 320px; }
-  .fv-photo img { object-position: center 25%; }
+  .fv-photo img { object-position: center top; }
   .fv-catch { font-size: 24px; }
   .fv-sub { font-size: 16px; }
   .fv-cta { flex-direction: column; }
