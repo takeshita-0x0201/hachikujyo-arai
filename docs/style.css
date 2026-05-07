@@ -91,12 +91,24 @@ img { max-width: 100%; height: auto; }
 }
 
 .header-logo a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   text-decoration: none;
   font-size: 22px;
   font-weight: 700;
   color: var(--color-text);
   white-space: nowrap;
   line-height: 1.3;
+}
+.header-rep-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 .header-logo small {
   display: block;
@@ -1195,7 +1207,8 @@ summary:focus-visible,
   }
   .header-tel { display: none; }
   .header-inner { padding: 8px 16px; }
-  .header-logo a { font-size: 16px; }
+  .header-logo a { font-size: 16px; gap: 8px; }
+  .header-rep-photo { width: 36px; height: 36px; }
 
   .container { padding: 0 20px; }
   section { padding: 32px 0; }
