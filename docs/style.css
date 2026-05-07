@@ -1161,7 +1161,7 @@ summary:focus-visible,
     max-height: 360px;
   }
   .fv-photo img {
-    object-position: center 30%;
+    object-position: center;
   }
   .fv-catch { font-size: 28px; }
   /* バッジは折り返しと余白を確保 */
@@ -1205,7 +1205,7 @@ summary:focus-visible,
   .fv { padding: 24px 0; }
   .fv-inner { flex-direction: column; gap: 20px; }
   .fv-photo { flex: none; width: 100%; height: 320px; }
-  .fv-photo img { object-position: center 25%; }
+  .fv-photo img { object-position: center; }
   .fv-catch { font-size: 24px; }
   .fv-sub { font-size: 16px; }
   .fv-cta { flex-direction: column; }
