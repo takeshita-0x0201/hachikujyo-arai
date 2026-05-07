@@ -46,7 +46,10 @@ function renderHeader() {
   <header class="site-header">
     <div class="header-inner">
       <div class="header-logo">
-        <a href="index.html"><small>${SITE.tagline}</small>${SITE.name}</a>
+        <a href="index.html">
+          <img src="images/representative.jpg" alt="" class="header-rep-photo" width="40" height="40" decoding="async">
+          <span class="header-logo-text"><small>${SITE.tagline}</small>${SITE.name}</span>
+        </a>
       </div>
       <nav class="header-nav" aria-label="グローバルナビ">
         ${navLinks}
