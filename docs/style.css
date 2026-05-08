@@ -288,7 +288,9 @@ section h3 {
 }
 .fv .contact-cta-buttons .btn-tel,
 .fv .contact-cta-buttons .btn-line-large {
-  height: 96px;
+  flex: none;
+  height: 108px;
+  width: 100%;
   padding-top: 0;
   padding-bottom: 0;
   box-sizing: border-box;
@@ -423,6 +425,11 @@ section h3 {
 .page-cta .btn-line {
   text-align: center;
   white-space: nowrap;
+}
+.page-cta .btn-line {
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.3;
 }
 
 /* --- Badges --- */
@@ -845,6 +852,16 @@ a.case-item:hover {
   gap: 8px;
   padding: 16px 28px;
   font-size: 20px;
+}
+.contact-cta-buttons .btn-tel {
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.3;
+}
+.contact-cta-buttons .btn-tel small {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-text);
 }
 .contact-cta-buttons .btn-line-large {
   background: #06C755;
